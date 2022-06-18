@@ -10,8 +10,10 @@ REQUIREMENTS_FILE_NAME="requirements.txt"
 
 def get_requirements_list()->List[str]:
     """
-    DESCRIPTION : 
-    This function will return the all the requirements mentioned in the requirements.txt file as a list.
+    Description: This function is going to return list of requirement 
+    mention in requirements.txt file
+    return This function is going to return a list which contain name 
+    of libraries mentioned in requirements.txt file
     """
     with open(REQUIREMENTS_FILE_NAME) as requirement_file:
         return requirement_file.readlines().remove("-e .")
