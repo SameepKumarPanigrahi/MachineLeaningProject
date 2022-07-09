@@ -18,7 +18,7 @@ class Configuration:
         except Exception as e:
             raise HousingException(e, sys) from e
         
-    def get_data_ingestion_config(self):
+    def get_data_ingestion_config(self) -> DataIngestionConfig:
         try:
             artifact_dir = self.training_pipeline_config.artifact_dir
             data_ingestion_artifact_dir = os.path.join(
@@ -54,7 +54,7 @@ class Configuration:
                 dataset_download_url = dataset_download_url,
                 tgz_download_dir = tgz_download_dir,
                 raw_data_dir = raw_data_dir,
-                ingested_test_dir = ingested_train_dir,
+                ingested_train_dir = ingested_train_dir,
                 ingested_test_dir = ingested_test_dir
             )
             logging.info(f"Data ingestion Config : {data_ingestion_config}")
@@ -63,11 +63,62 @@ class Configuration:
         except Exception as e:
             raise HousingException(e, sys) from e
     
-    def get_data_validation_config(self):
-        pass
+    def get_data_validation_config(self) -> DataValidationConfig:
+        try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+            data_validation_artifact_dir = os.path.join(
+                artifact_dir,
+                DATA_VALIDATION_ARTIFACT_DIR_NAME,
+                self.time_stamp
+            )
+            data_validation_config = self.config_info[DATA_VALIDATION_CONFIG_KEY]
+            
+            schema_file_path = os.path.join(ROOT_DIR,
+                                            data_validation_config[DATA_VALIDATION_SCHEMA_DIR_KEY],
+                                            data_validation_config[DATA_VALIDATION_SCHEMA_FILE_NAME_KEY])
+            report_file_path = os.path.join(data_validation_artifact_dir,
+                                            data_validation_config[DATA_VALIDATION_REPORT_FILE_NAME_KEY])
+            report_page_file_path = os.path.join(data_validation_artifact_dir,
+                                                 data_validation_config[DATA_VALIDATION_REPORT_PAGE_FILE_NAME_KEY])
+            data_validation_config = DataValidationConfig(schema_file_path = schema_file_path,
+                                                          report_file_path = report_file_path,
+                                                          report_page_file_path = report_page_file_path)
+            logging.info(f"Data validation config: {data_validation_config}")
+            return data_validation_config
+        except Exception as e:
+            raise HousingException(e, sys) from e
     
-    def get_data_transformation_config(self):
-        pass
+    def get_data_transformation_config(self) -> DataTransformationConfig:
+        try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+            data_transformation_artifact_dir = os.path.join(
+                artifact_dir,
+                DATA_TRANSFORMATION_ARTIFACT_DIR,
+                self.time_stamp
+            )
+            data_transformation_config_info = self.config_info[DATA_TRANSFORMATION_CONFIG_KEY]
+            
+            add_bedroom_per_room = data_transformation_config_info[DATA_TRANSFORMATION_ADD_BEDROOM_PER_ROOM_KEY]
+            
+            transformed_train_dir = os.path.join(data_transformation_artifact_dir,
+                                                 data_transformation_config_info[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                                                 data_transformation_config_info[DATA_TRANSFORMATION_TRAIN_DIR_NAME_KEY])
+            
+            transformed_test_dir = os.path.join(data_transformation_artifact_dir,
+                                                data_transformation_config_info[DATA_TRANSFORMATION_DIR_NAME_KEY],
+                                                data_transformation_config_info[DATA_TRANSFORMATION_TEST_DIR_NAME_KEY])
+            
+            preprocessed_object_file_path = os.path.join(data_transformation_artifact_dir,
+                                                         data_transformation_config_info[DATA_TRANSFORMATION_PREPROCESSING_DIR_KEY],
+                                                         data_transformation_config_info[DATA_TRANSFORMATION_PREPROCESSED_FILE_NAME_KEY])
+            data_transformation_config = DataTransformationConfig(add_bedroom_per_room = add_bedroom_per_room,
+                                                                  transformed_train_dir = transformed_train_dir,
+                                                                  transformed_test_dir = transformed_test_dir,
+                                                                  preprocessed_object_file_path= preprocessed_object_file_path)
+            logging.info(f"Data transformation config: {data_transformation_config}")
+            return data_transformation_config
+        except Exception as e:
+            raise HousingException(e, sys) from e
     
     def get_model_trainer_config(self):
         pass
