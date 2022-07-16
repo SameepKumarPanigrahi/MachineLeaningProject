@@ -6,7 +6,11 @@ __pycache__/
 # C extensions
 *.so
 housing/artifact
+saved_models/*
 notebook/
+*trainer
+model_pusher/*
+model_evaluation/*
 # Distribution / packaging
 .Python
 build/

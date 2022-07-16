@@ -164,6 +164,7 @@ class Configuration:
                 time_stamp=self.time_stamp
             )
             logging.info(f"Model Evaluation config: {model_evaluation_config}")
+            return model_evaluation_config
         except Exception as e:
             raise HousingException(e, sys) from e
     
